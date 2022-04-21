@@ -16,7 +16,30 @@ export default {
 
     data() {
         return {
-            volume: 0
+            volume: 0,
+            controllers: [
+                {
+                    "item": "RandomNumber",
+                    "hint": ""
+                },
+                {
+                    "item": "Slider",
+                    "hint": "Grab and tilt the slider"
+                },
+                {
+                    "item": "Launcher",
+                    "hint": "Press the icon and release to launch the volume indicator"
+                },
+                {
+                    "item": "SpinnerWheel",
+                    "hint": ""
+                },
+                {
+                    "item": "OptionList",
+                    "hint": ""
+                }
+            ],
+            current: 0 // current controller index
         }
     },
     
@@ -27,33 +50,78 @@ export default {
             let currentVolume = e.target.volume
             this.volume = currentVolume
         }
+    },
+
+    methods: {
+        switchController(isNext) {
+            let len = this.controllers.length
+            if (isNext) {
+                this.current = (this.current + 1) % len
+            } else {
+                this.current = (this.current - 1 + len) % len
+            }
+        }
     }
 }
 </script>
 
 <template>
+    <div class="title">
+        <h1>Canon in D Major</h1>
+    </div>
     <div class="player">
-        <audio id="audio" controls>
-            <source src="../assets/Canon.mp3">
-        </audio>
+        <div class="previous"
+            @click="switchController(false)">
+            <img src="../assets/arrow.svg">
+        </div>
+        <div class="audio-container">
+            <audio id="audio" controls>
+                <source src="../assets/Canon.mp3">
+            </audio>
+        </div>
+        <div class="next"
+            @click="switchController(true)">
+            <img src="../assets/arrow.svg">
+        </div>
     </div>
     <div class="controller">
-        <RandomNumber :volume="volume" />
-        <Slider :volume="volume"/>
-        <Launcher />
-        <SpinnerWheel />
-        <OptionList :volume="volume"/>
+        <component :is="controllers[current].item" :volume="volume"></component>
+    </div>
+    <div class="hint">
+        <div>{{ controllers[current].hint }}</div>
     </div>
 </template>
 
-<style>
-.player {
-    padding: 20px;
+<style scoped>
+.title {
     text-align: center;
 }
-.divider {
-    height: 1px;
-    width: 50%;
-    background: grey;
+.player {
+    width: 60%;
+    margin: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+.audio-container {
+    display: flex;
+    align-content: center;
+}
+.previous {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+}
+.next {
+    width: 50px;
+    height: 50px;
+    transform: rotate(180deg);
+    cursor: pointer;
+}
+.hint {
+    color: #b5b5b5;
+    text-align: center;
 }
 </style>

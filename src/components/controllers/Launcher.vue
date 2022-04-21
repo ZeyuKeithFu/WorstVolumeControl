@@ -101,7 +101,7 @@ export default {
 
 <style scoped>
 .control-container {
-    padding: 20px;
+    padding: 80px 0;
     display: flex;
     justify-content: center;
     align-items: center;
