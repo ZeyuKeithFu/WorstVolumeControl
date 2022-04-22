@@ -72,16 +72,16 @@ export default {
     <div class="player">
         <div class="previous"
             @click="switchController(false)">
-            <img src="../assets/arrow.svg">
+            <img :src="'icon/arrow.svg'">
         </div>
         <div class="audio-container">
             <audio id="audio" controls>
-                <source src="../assets/Canon.mp3">
+                <source :src="'raw/Canon.mp3'">
             </audio>
         </div>
         <div class="next"
             @click="switchController(true)">
-            <img src="../assets/arrow.svg">
+            <img :src="'icon/arrow.svg'">
         </div>
     </div>
     <div class="controller">

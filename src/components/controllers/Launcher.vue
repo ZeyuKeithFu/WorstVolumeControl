@@ -111,10 +111,10 @@ export default {
     height: 60px;
     background-color: lightgrey;
     transform-origin: 10% center;
-    mask-image: url("../../assets/volume.svg");
+    mask-image: url("/icon/volume.svg");
     mask-repeat: no-repeat;
     mask-size: 100%;
-    -webkit-mask-image: url("../../assets/volume.svg");
+    -webkit-mask-image: url("/icon/volume.svg");
     -webkit-mask-image-repeat: no-repeat;
     -webkit-mask-size: 100%;
 }
