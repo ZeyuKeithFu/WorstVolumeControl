@@ -39,7 +39,7 @@ export default {
                 }
                 this.v = 0
             }
-            audio.volume = currentVolume
+            this.audio.volume = currentVolume
         },
 
         onMouseDown(e) {
@@ -61,7 +61,7 @@ export default {
             }
         },
 
-        onMouseLeave(e) {
+        onMouseLeave() {
             this.isDragging = false
             // reset status
             clearInterval(this.timer)
@@ -79,8 +79,8 @@ export default {
 <template>
     <div class="control-container"
         @mousemove="onMouseMove($event)"
-        @mouseleave="onMouseLeave($event)"
-        @mouseup="onMouseLeave($event)">
+        @mouseleave="onMouseLeave()"
+        @mouseup="onMouseLeave()">
         <h3 class="control-title">Volume: {{ Math.round(this.volume * 100) }}</h3>
         <div id="slider-container"
             :class="this.isDragging ? '' : 'transition'"

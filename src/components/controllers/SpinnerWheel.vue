@@ -55,9 +55,10 @@ export default {
 
         shrinkButton() {
             this.buttonScale *= 0.99
-            this.wheelW += 0.02
             if (this.buttonScale < 0.6) {
                 this.buttonScale = 0.6
+            } else {
+                this.wheelW += 0.02
             }
             this.button.style.transform = `scale(${this.buttonScale})`
         },

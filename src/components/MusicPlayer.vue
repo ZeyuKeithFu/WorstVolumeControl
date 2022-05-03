@@ -1,16 +1,16 @@
 <script>
 import RandomNumber from "./controllers/RandomNumber.vue"
 import OptionList from "./controllers/OptionList.vue"
-import Slider from "./controllers/Slider.vue"
-import Launcher from "./controllers/Launcher.vue"
+import VolumeSlider from "./controllers/VolumeSlider.vue"
+import VolumeLauncher from "./controllers/VolumeLauncher.vue"
 import SpinnerWheel from "./controllers/SpinnerWheel.vue"
 
 export default {
     components: {
         RandomNumber,
         OptionList,
-        Slider,
-        Launcher,
+        VolumeSlider,
+        VolumeLauncher,
         SpinnerWheel
     },
 
@@ -23,11 +23,11 @@ export default {
                     "hint": ""
                 },
                 {
-                    "item": "Slider",
+                    "item": "VolumeSlider",
                     "hint": "Grab and tilt the slider"
                 },
                 {
-                    "item": "Launcher",
+                    "item": "VolumeLauncher",
                     "hint": "Press the icon and release to launch the volume indicator"
                 },
                 {
