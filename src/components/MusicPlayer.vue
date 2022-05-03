@@ -4,6 +4,7 @@ import OptionList from "./controllers/OptionList.vue"
 import VolumeSlider from "./controllers/VolumeSlider.vue"
 import VolumeLauncher from "./controllers/VolumeLauncher.vue"
 import SpinnerWheel from "./controllers/SpinnerWheel.vue"
+import VolumePattern from "./controllers/VolumePattern.vue"
 
 export default {
     components: {
@@ -11,13 +12,18 @@ export default {
         OptionList,
         VolumeSlider,
         VolumeLauncher,
-        SpinnerWheel
+        SpinnerWheel,
+        VolumePattern
     },
 
     data() {
         return {
             volume: 0,
             controllers: [
+                {
+                    "item": "VolumePattern",
+                    "hint": "Drag the dots to form a digit pattern (0-9, representing 0% to 99% volume). \nPress and hold SHIFT and select an area for recognizing volume."
+                },
                 {
                     "item": "RandomNumber",
                     "hint": ""
@@ -66,9 +72,7 @@ export default {
 </script>
 
 <template>
-    <div class="title">
-        <h1>Canon in D Major</h1>
-    </div>
+    <div class="hint">Switch to other controllers by clicking arrow buttons aside</div>
     <div class="player">
         <div class="previous"
             @click="switchController(false)">
@@ -93,8 +97,10 @@ export default {
 </template>
 
 <style scoped>
-.title {
+.hint {
+    margin-top: 20px;
     text-align: center;
+    color: #2c3e50;
 }
 .player {
     width: 60%;
@@ -123,5 +129,6 @@ export default {
 .hint {
     color: #b5b5b5;
     text-align: center;
+    white-space:pre-wrap;
 }
 </style>
