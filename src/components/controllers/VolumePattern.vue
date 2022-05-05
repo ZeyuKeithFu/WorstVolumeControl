@@ -129,7 +129,7 @@ export default {
         async run(inputTensor) {
             try {
                 // create a new session and load the model.
-                const session = await ort.InferenceSession.create('/model/mnist-8.onnx',
+                const session = await ort.InferenceSession.create('model/mnist-8.onnx',
                     { executionProviders: ['webgl'] })
 
                 // prepare feeds. use model input names as keys.
