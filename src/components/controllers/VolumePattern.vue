@@ -70,7 +70,7 @@ export default {
                     height: h
                 }).then(canvas => {
                     let resizedImageData = this.processImage(canvas, 28)
-                    let inputTensor = this.imageDataToTensor(resizedImageData, [1, 1, 28, 28])
+                    let inputTensor = this.imageDataToTensor(resizedImageData)
                     this.run(inputTensor)
                 })
             } else {
@@ -101,27 +101,31 @@ export default {
             return ctx.getImageData(0, 0, width, width).data;
         },
 
-        imageDataToTensor(data, dims) {
-            // 1a. Extract the R, G, and B channels from the data
-            // To optimize: for MNIST model, greyscale should be enough for work
-            const [R, G, B] = [[], [], []]
-            for (let i = 0; i < data.length; i += 4) {
-                R.push(data[i]);
-                G.push(data[i + 1]);
-                B.push(data[i + 2]);
-                // 2. skip data[i + 3] thus filtering out the alpha channel
+        imageDataToTensor(data) {
+            const input = new Float32Array(28 * 28)
+            for (let i = 0, len = data.length; i < len; i += 4) {
+                input[i / 4] = data[i + 3] / 255
             }
-            // 1b. concatenate RGB ~= transpose [28, 28, 1] -> [1, 28, 28]
-            const transposedData = R.concat(G).concat(B);
+            const inputTensor = new ort.Tensor('float32', input, [1, 1, 28, 28])
+            // // 1a. Extract the R, G, and B channels from the data
+            // // To optimize: for MNIST model, greyscale should be enough for work
+            // const [R, G, B] = [[], [], []]
+            // for (let i = 0; i < data.length; i += 4) {
+            //     R.push(data[i]);
+            //     G.push(data[i + 1]);
+            //     B.push(data[i + 2]);
+            //     // 2. skip data[i + 3] thus filtering out the alpha channel
+            // }
+            // // 1b. concatenate RGB ~= transpose [28, 28, 1] -> [1, 28, 28]
+            // const transposedData = R.concat(G).concat(B);
 
-            // 3. convert to float32
-            let i, l = transposedData.length; // length, we need this for the loop
-            const float32Data = new Float32Array(1 * 28 * 28); // create the Float32Array for output
-            for (i = 0; i < l; i++) {
-                float32Data[i] = transposedData[i] / 255.0; // convert to float
-            }
-
-            const inputTensor = new ort.Tensor("float32", float32Data, dims);
+            // // 3. convert to float32
+            // let i, l = transposedData.length; // length, we need this for the loop
+            // const float32Data = new Float32Array(1 * 28 * 28); // create the Float32Array for output
+            // for (i = 0; i < l; i++) {
+            //     float32Data[i] = transposedData[i] / 255.0; // convert to float
+            // }
+            // const inputTensor = new ort.Tensor("float32", float32Data, dims);
             return inputTensor;
         },
 
@@ -129,17 +133,18 @@ export default {
         async run(inputTensor) {
             try {
                 // create a new session and load the model.
-                const session = await ort.InferenceSession.create('model/mnist-8.onnx',
+                const model = await ort.InferenceSession.create('model/mnist-8.onnx',
                     { executionProviders: ['webgl'] })
 
                 // prepare feeds. use model input names as keys.
-                const feeds = { Input3: inputTensor }
+                const feeds = {}
+                feeds[model.inputNames[0]] = inputTensor
 
                 // feed inputs and run
-                const results = await session.run(feeds)
-                let data = results.Plus214_Output_0.data
-                let digitResult = this.softMax(data)
-                    .reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0)
+                const results = await model.run(feeds)
+                let outputData = results[model.outputNames[0]]
+                let output = this.softMax(outputData.data)
+                let digitResult = this.getPredictedClass(output)
                 this.updateVolume(digitResult * 11 / 100)
             } catch (e) {
                 console.log(e);
@@ -153,6 +158,13 @@ export default {
             return arr.map((value) => {
                 return Math.exp(value - C) / d;
             });
+        },
+
+        getPredictedClass(output) {
+            if (output.reduce((a, b) => a + b, 0) === 0) { 
+                return -1;
+            }
+            return output.reduce((argmax, n, i) => (n > output[argmax] ? i : argmax), 0)
         },
 
         onMouseUp() {
@@ -254,9 +266,9 @@ export default {
         </div>
     </div>
     <div id="pattern-selector" hidden></div>
-    <!-- <div>
+    <div>
         <img id="scaled-img">
-    </div> -->
+    </div>
     <button @click="recognize">Recognize volume</button>
 </div>
 </template>

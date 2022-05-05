@@ -22,7 +22,7 @@ export default {
             controllers: [
                 {
                     "item": "VolumePattern",
-                    "hint": "Drag the dots to form a digit pattern (0-9, representing 0% to 99% volume). \nPress and hold SHIFT and select an area for recognizing volume."
+                    "hint": "Drag the dots to form a digit pattern (0-9) representing the level. \nPress and hold SHIFT and select an area for recognizing volume."
                 },
                 {
                     "item": "RandomNumber",
